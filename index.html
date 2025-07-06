@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InstantBrief - Summarize Anything Instantly</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Orbitron:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; font-family:'Inter',sans-serif; background:#fff; color:#111; line-height:1.6; transition:background 0.3s, color 0.3s; }
+    header { position:sticky; top:0; background:#fff; border-bottom:1px solid #eee; width:100%; transition:background 0.3s; }
+    nav { padding:20px 60px; display:flex; justify-content:space-between; align-items:center; width:100%; box-sizing:border-box; }
+    .logo { font-family:'Orbitron',monospace; font-size:2.2em; font-weight:900; color:#000; text-decoration:none; display:flex; align-items:center; gap:15px; letter-spacing:2px; text-transform:uppercase; }
+    .logo img { height:96px; width:auto; }
+    .menu { display:flex; align-items:center; gap:30px; }
+    .menu a { text-decoration:none; color:#333; font-weight:500; transition:.2s; }
+    .menu a:hover { color:#000; }
+    .hero { text-align:center; padding:80px 20px 40px; }
+    .hero h1 { font-size:3em; font-weight:700; margin:30px 0 20px; letter-spacing:-0.5px; }
+    .hero p { font-size:1.2em; max-width:700px; margin:auto; color:#555; }
+    .cta-container { text-align:center; margin:40px 0 20px; }
+    .cta-btn { display:inline-block; background:#000; color:#fff; padding:18px 40px; border-radius:8px; font-weight:600; font-size:1.1em; text-decoration:none; transition:.3s; }
+    .cta-btn:hover { background:#333; }
+    .toggle-switch { position: relative; width: 40px; height: 20px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-switch label { position: absolute; cursor: pointer; background-color: #ccc; border-radius: 20px; width: 100%; height: 100%; transition: background-color 0.3s; }
+    .toggle-switch label::before { content: ""; position: absolute; left: 2px; top: 2px; width: 16px; height: 16px; background-color: white; border-radius: 50%; transition: transform 0.3s; }
+    .toggle-switch input:checked + label { background-color: #000; }
+    .toggle-switch input:checked + label::before { transform: translateX(20px); }
+    section { padding:60px 20px; max-width:1200px; margin:auto; }
+    section#features { padding-top:40px; }
+    section h2 { font-size:2.2em; font-weight:600; margin-bottom:20px; text-align:center; color:#000; transition: color 0.3s; }
+    section p { text-align:center; max-width:600px; margin:0 auto 40px; color:#555; transition: color 0.3s; }
+    .card-grid { display:grid; row-gap:60px; column-gap:40px; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); }
+    .card { border:1px solid #000; border-radius:16px; padding:30px; font-size:1em; line-height:1.6; transition:.3s; background:#fff; box-shadow:0 10px 30px rgba(0,0,0,0.04); }
+    .card:hover { transform:translateY(-8px); box-shadow:0 14px 40px rgba(0,0,0,0.07); }
+    .card strong { display:block; margin-bottom:12px; color:#000; font-weight:700; font-size:1.2em; transition: color 0.3s; }
+    .footer-divider { border-top:2px solid #ddd; max-width:1200px; margin:50px auto 0 auto; }
+    footer { max-width:1200px; margin:0 auto; padding:40px 20px; font-size:0.95em; color:#777; }
+    .footer-grid { display:grid; gap:30px; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); margin-bottom:30px; }
+    .footer-section h3 { font-size:1.1em; font-weight:600; margin-bottom:10px; color:#000; transition: color 0.3s; }
+    .footer-section p, .footer-section a { margin:5px 0; color:#555; text-decoration:none; display:block; transition: color 0.3s; }
+    .footer-section a:hover { color:#000; }
+    .footer-bottom { text-align:center; color:#777; border-top:1px solid #eee; padding-top:15px; }
+
+    /* Mobile responsive adjustments */
+    @media (max-width: 768px) {
+      nav { padding:15px 20px; flex-direction:column; gap:20px; }
+      .logo { font-size:1.8em; }
+      .menu { gap:20px; }
+      .hero { padding:60px 20px 40px; }
+      .hero h1 { font-size:2.2em; }
+    }
+
+    body.dark-mode { background:#111; color:#eee; }
+    body.dark-mode header { background:#111; border-bottom-color:#444; }
+    body.dark-mode .logo, body.dark-mode .menu a, body.dark-mode .footer-section h3, body.dark-mode .footer-section a { color:#fff; }
+    body.dark-mode .menu a:hover, body.dark-mode .footer-section a:hover { color:#ddd; }
+    body.dark-mode .card { background:#222; border-color:#fff; }
+    body.dark-mode .cta-btn { background:#fff; color:#000; }
+    body.dark-mode .cta-btn:hover { background:#ddd; }
+    body.dark-mode .footer-divider { border-top-color:#444; }
+    body.dark-mode footer { color:#ccc; }
+    body.dark-mode section h2 { color:#fff; }
+    body.dark-mode section p { color:#ccc; }
+    body.dark-mode .card strong { color:#fff; }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="#" class="logo">
+      <img src="instantlogo.png" alt="InstantBrief Logo">
+      InstantBrief
+    </a>
+    <div class="menu">
+      <a href="#home">Home</a>
+      <a href="#features">Features</a>
+      <a href="#usecases">Use Cases</a>
+      <div class="toggle-switch">
+        <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+        <label for="darkModeToggle"></label>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" id="home">
+  <h1>Summarize Anything Instantly</h1>
+  <p>Turn lengthy text into clear, concise summaries in seconds with InstantBrief — your AI-powered tool for smarter reading and productivity.</p>
+</section>
+
+<div class="cta-container">
+  <a href="#" class="cta-btn">Launch InstantBrief ➔</a>
+</div>
+
+<section id="features">
+  <h2>Features</h2>
+  <p>Empower your team with cutting-edge AI summarization, optimized for scale and enterprise-grade performance.</p>
+  <div class="card-grid">
+    <div class="card"><strong>Powered by AI</strong>Backed by cutting-edge NLP models for high-quality, accurate summaries.</div>
+    <div class="card"><strong>Real-Time Processing Speed</strong>Get instant summaries with our optimized, cloud-native infrastructure.</div>
+    <div class="card"><strong>Seamless Integration Tools</strong>Connect easily with your favorite platforms, CRMs, and services.</div>
+    <div class="card"><strong>Developer-Friendly API</strong>Effortlessly integrate InstantBrief into your workflow with our reliable and easy-to-use API.</div>
+    <div class="card"><strong>Enterprise-Grade Security</strong>Protect your data with end-to-end encryption and enterprise-level security standards.</div>
+    <div class="card"><strong>Scalable Cloud Architecture</strong>Optimized to maintain top performance, even as your organization scales.</div>
+  </div>
+</section>
+
+<section id="usecases">
+  <h2>Use Cases</h2>
+  <p>Designed to scale efficiently for Enterprises, Agencies, SMBs, and fast-growing startups that need reliable, automated content summarization.</p>
+  <div class="card-grid">
+    <div class="card"><strong>Enterprises</strong>Streamline document-heavy workflows and improve knowledge management at scale.</div>
+    <div class="card"><strong>Businesses & Teams</strong>Provide team members with actionable briefs from lengthy reports, contracts, or emails.</div>
+    <div class="card"><strong>Agencies & Content Studios</strong>Speed up content research, competitor analysis, and social media planning with instant summaries.</div>
+    <div class="card"><strong>Students & Educators</strong>Summarize textbooks, research papers, or lecture notes instantly for faster learning.</div>
+    <div class="card"><strong>Busy Professionals</strong>Get key insights from detailed documents or articles in seconds, saving valuable time.</div>
+    <div class="card"><strong>Content Creators</strong>Generate digestible overviews for blogs, newsletters, and social posts automatically.</div>
+  </div>
+</section>
+
+<div class="footer-divider"></div>
+<footer>
+  <div class="footer-grid">
+    <div class="footer-section">
+      <h3>FAQs</h3>
+      <p><strong>How does it work?</strong></p>
+      <p>Our AI processes text instantly.</p>
+      <p><strong>Is my data secure?</strong></p>
+      <p>Yes, we use enterprise-grade encryption.</p>
+      <p><strong>Do you offer support?</strong></p>
+      <p>Email us anytime!</p>
+    </div>
+    <div class="footer-section">
+      <h3>Quick Links</h3>
+      <a href="#features">Features</a>
+      <a href="#usecases">Use Cases</a>
+    </div>
+    <div class="footer-section">
+      <h3>Contact Us</h3>
+      <p>Email: <a href="mailto:support@instantbrief.xyz">support@instantbrief.xyz</a></p>
+      <p>Follow us on <a href="https://twitter.com" target="_blank">Twitter</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 InstantBrief. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+  }
+</script>
+
+</body>
+</html>
